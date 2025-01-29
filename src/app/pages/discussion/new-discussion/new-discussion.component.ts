@@ -1,4 +1,4 @@
-import {Component, signal} from '@angular/core';
+import {Component, input, Input, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {IconComponent} from '../../../components/icon/icon.component';
 import {Discussion} from '../../../model/discussion.type';
@@ -37,10 +37,10 @@ export class NewDiscussionComponent {
     if (this.newDiscussion.title == "") {
       this.errorMessage = "You must enter a title"
     }
-
     const createdDiscussion = await this.discussionService.createDiscussion(this.newDiscussion);
     console.log('Discussion créée avec succès :', createdDiscussion);
-    this.router.navigate(['/discussions']);
+
+    this.discussionService.setRoute("one-discussion");
 
   }
 }

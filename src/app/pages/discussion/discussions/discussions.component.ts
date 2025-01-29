@@ -23,18 +23,37 @@ import {NewDiscussionComponent} from '../new-discussion/new-discussion.component
 })
 export class DiscussionsComponent {
   discussions = signal<Discussion[]>([])
-  currentDiscussion = signal<Discussion | null>(null)
-  route = signal<string>("one-discussion")
+  currentDiscussion!: Discussion | null
+  route!: string
+
+  // one-discussion  new-discussion   edit-discussion
 
   constructor(private discussionService: DiscussionService, private userService: UsersService, private router: Router) {
   }
 
   ngOnInit() {
     this.getDiscussionsData()
+    this.discussionService.currentDiscussion$.subscribe(discussion => {
+      this.currentDiscussion = discussion
+    })
+    this.discussionService.route$.subscribe(route => {
+      this.route = route
+    })
   }
 
-  openPanelNewDiscussion(){
-    this.route.set("new-discussion")
+
+  openPanelNewDiscussion() {
+    this.discussionService.setRoute("new-discussion")
+  }
+
+  async changeDiscussion(id: string | undefined) {
+    console.log('get discussion', id);
+    if (id) {
+      const discussion = await this.discussionService.getDiscussion(id)
+      console.log(discussion)
+      this.discussionService.setCurrentDiscussion(discussion)
+      this.discussionService.setRoute("one-discussion")
+    }
   }
 
   getDiscussionsData() {
@@ -54,11 +73,10 @@ export class DiscussionsComponent {
           }
           discussionFinalData.push(discussion);
           if (index == 0) {
-            this.currentDiscussion.set(discussion)
+            this.discussionService.setCurrentDiscussion(discussion)
           }
 
         }
-        console.log(discussionFinalData);
         this.discussions.set(discussionFinalData)
       });
   }

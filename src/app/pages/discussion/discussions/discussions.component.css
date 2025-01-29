@@ -75,8 +75,10 @@
 }
 
 .discussionsPage .oneDiscussion.focus {
-
   background: rgb(161 167 156 / 77%);
+}
+.discussionsPage .oneDiscussion:hover:not(.focus) {
+  background: rgba(188, 197, 182, 0.77);
 }
 
 .discussionsPage .oneDiscussion > img {

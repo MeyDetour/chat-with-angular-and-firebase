@@ -80,7 +80,6 @@ export class UsersService {
     await updateProfile(user, {
       displayName: displayName,
     });
-    console.log(user);
     const userDocRef = doc(this.firestore, 'users', user.uid);
     await setDoc(userDocRef, {
       email: user.email,

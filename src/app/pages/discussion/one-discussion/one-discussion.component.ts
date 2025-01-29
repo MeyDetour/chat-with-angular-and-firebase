@@ -11,21 +11,28 @@ import {Router, Routes} from '@angular/router';
 })
 export class OneDiscussionComponent {
   @Input() discussion: any;
+  route = input()
 
-  constructor(private discussionService: DiscussionService,private router :Router) {
+  constructor(private discussionService: DiscussionService, private router: Router) {
   }
 
   ngOnInit() {
     console.log(this.discussion);
+    console.log(this.route);
   }
 
+  edit() {
+    this.discussionService.setRoute("edit-discussion")
+  }
 
   async delete() {
+
     let res = await this.discussionService.deleteDiscussion(this.discussion)
-    console.log("delete")
+    this.discussion.set(null)
   }
-  update(){
-this.router.navigate(["/discussion/edit/"+this.discussion.id])
+
+  update() {
+    this.router.navigate(["/discussion/edit/" + this.discussion.id])
   }
 }
 

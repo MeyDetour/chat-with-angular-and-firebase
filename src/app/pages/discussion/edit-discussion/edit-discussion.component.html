@@ -1,1 +1,27 @@
-<p>edit-component works!</p>
+@if(currentDiscussion){
+  <div class="editDiscussion">
+    <form class="form" method="post" #form="ngForm" (ngSubmit)="onSubmit()">
+
+      <p class="title">new Discussion</p>
+      @if (successMessage) {
+        <p class="success-message">{{ successMessage }}</p>
+      }
+      @if (errorMessage) {
+        <p style="color:red" class="error-message">{{ errorMessage }}</p>
+      }
+      <label>
+        <span>Name of group</span>
+        <input [(ngModel)]="currentDiscussion.title"
+               name="title"
+               class="input" type="text"
+               placeholder="" required="Email is required">
+      </label>
+
+
+      <button class="submit">modifier</button>
+
+
+    </form>
+  </div>
+
+}
