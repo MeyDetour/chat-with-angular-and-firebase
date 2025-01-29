@@ -1,0 +1,41 @@
+
+.discussionPage{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+}
+header{
+  width: 100%;
+  height: 6vh;
+  background: var(--very-light-green);
+
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+header svg{
+  cursor: pointer;
+}
+header h2{
+  margin: 0;
+  line-height: 37px;
+}
+.inputContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
+  box-sizing: border-box;
+}
+.inputContainer textarea{
+
+  width: 94%;
+  border-radius: 5px;
+  border: 1px solid rgb(192 192 192 / 40%);background-color: #f3f3f3;
+}

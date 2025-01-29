@@ -1,0 +1,56 @@
+import { Injectable } from '@angular/core';
+import { Firestore, collection, doc, addDoc, setDoc, query, where, getDocs } from '@angular/fire/firestore';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class DiscussionsService {
+  constructor(private firestore: Firestore) {}
+
+  // Ajouter une discussion
+  async addDiscussion(title: string, creatorId: string, participants: string[]) {
+    const discussionsRef = collection(this.firestore, 'discussions');
+
+    const newDiscussion = {
+      title,
+      creatorId,
+      participants,
+      createdAt: new Date().toISOString(),
+    };
+
+    const docRef = await addDoc(discussionsRef, newDiscussion);
+    return docRef.id; // Retourne l'ID de la discussion créée
+  }
+
+  // Ajouter un message à une discussion
+  async addMessage(discussionId: string, senderId: string, content: string) {
+    const messagesRef = collection(this.firestore, `discussions/${discussionId}/messages`);
+
+    const newMessage = {
+      senderId,
+      content,
+      createdAt: new Date().toISOString(),
+    };
+
+    const docRef = await addDoc(messagesRef, newMessage);
+    return docRef.id; // Retourne l'ID du message créé
+  }
+
+  // Récupérer toutes les discussions
+  async getDiscussions() {
+    const discussionsRef = collection(this.firestore, 'discussions');
+    const q = query(discussionsRef);
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
+
+  // Récupérer tous les messages d'une discussion
+  async getMessages(discussionId: string) {
+    const messagesRef = collection(this.firestore, `discussions/${discussionId}/messages`);
+    const q = query(messagesRef);
+
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
+}

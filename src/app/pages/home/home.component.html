@@ -1,0 +1,11 @@
+<div class="container">
+
+  <p>home works!</p>
+  <input type="text" placeholder="write here" (keyup)="getTextInput($event)">
+
+  @for (user of users(); track $index) {
+    <p>{{ user.firstName }}</p>
+
+  }
+
+</div>

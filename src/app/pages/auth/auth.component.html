@@ -1,0 +1,56 @@
+<div class="container">
+  <form class="form" method="post" #form="ngForm" (ngSubmit)="onSubmit()">
+    <p class="title">{{ type() == 'signup' ? 'Register' : 'Login' }} </p>
+    @if (successMessage) {
+      <p class="success-message">{{ successMessage }}</p>
+    }
+    @if (errorMessage) {
+      <p style="color:red" class="error-message">{{ errorMessage }}</p>
+    }
+    @if (type() == "signup"){
+
+        <label>
+          <span>Display Name</span>
+          <input [(ngModel)]="newUser.displayName"
+                 name="firstName"
+                 class="input" type="text" placeholder="" required="">
+        </label>
+
+
+    }
+
+    <label>
+      <span>Email</span>
+      <input [(ngModel)]="newUser.email"
+             name="email"
+             class="input" type="email"
+
+             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+             #emailInput="ngModel"
+             placeholder="" required="Email is required">
+
+    </label>
+
+    <label>
+      <span>Password</span>
+      <input [(ngModel)]="newUser.password"
+
+             name="password"
+             class="input" type="password" placeholder="" required="">
+
+    </label>
+    <p class="signin">Already have an acount ? <span  style="text-decoration: underline; cursor: pointer" (click)="setType(type()=='signup'?'login':'signup')">Login</span></p>
+
+    <button class="submit">Submit</button>
+
+    <span>(non fonctionnel actuellement)</span>
+    <div class="icons">
+      <app-icon [action]="loginWithGoogle" [iconLink]="'google.svg'"></app-icon>
+      <app-icon [iconLink]="'apple.svg'"></app-icon>
+      <app-icon [iconLink]="'facebook.svg'"></app-icon>
+    </div>
+
+
+
+  </form>
+</div>

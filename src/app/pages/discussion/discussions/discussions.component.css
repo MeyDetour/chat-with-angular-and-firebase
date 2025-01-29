@@ -1,0 +1,98 @@
+.discussionsPage {
+  width: 100%;
+  height: 98vh;
+  min-height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+
+/* ===================NAV================*/
+
+.navDiscussions {
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: start;
+  padding: 20px;
+  background: rgb(197 203 192 / 85%);
+  border-radius: 12px 0 0 12px;
+}
+
+.searchForm {
+  background: white;
+  border-radius: 5px;
+  padding: 10px 9px;
+  box-sizing: border-box;
+}
+
+.button {
+  border: 0;
+  border-radius: 5px;
+  padding: 13px;
+  background: white;
+}
+
+.searchForm label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+.searchForm input {
+  width: 93%;
+  border: 0;
+  background: transparent;
+  color: black;
+}
+
+.searchForm input::placeholder {
+  color: black;
+}
+
+/* discussion list */
+.navDiscussions > div:last-child {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+}
+
+.discussionsPage .oneDiscussion {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.discussionsPage .oneDiscussion.focus {
+
+  background: rgb(161 167 156 / 77%);
+}
+
+.discussionsPage .oneDiscussion > img {
+  object-fit: cover;
+
+  width: 37px;
+  height: 37px;
+  object-position: left;
+  border-radius: 50%;
+
+}
+
+
+/* ===========DISCUSSION===============*/
+
+.rightPanel {
+  width: 80%;
+  height: 100%;
+}

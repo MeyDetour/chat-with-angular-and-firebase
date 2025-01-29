@@ -1,0 +1,208 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* https://dribbble.com/shots/23280048-Web-Chat-UI */
+:root{
+  --very-light-green : rgba(240, 244, 237, 0.85);
+  --light-green : rgb(197 203 192 / 85%);
+  --green : #353f36;
+  --black : black;
+
+}
+
+body {
+  background: #353f36;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 1vh;
+  font-family: Inter, sans-serif;
+}
+
+
+#root {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+
+}
+.navbar{
+  display: flex;
+flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 8%;
+
+}
+.content {
+  width: 90%;
+  min-height: 100%;
+  max-height: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #ece7e7;
+  border-radius: 14px;
+}
+
+.container {
+  width: 100%;
+  height: 100vh;
+  padding: 50px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* From Uiverse.io by ammarsaa */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 90%;
+  padding: 20px;
+  border-radius: 20px;
+  position: relative;
+  color: black;
+  min-width: 43vw;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -1px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 30px;
+  color: var(--green);
+}
+
+.title::before {
+  width: 18px;
+  height: 18px;
+}
+
+.title::after {
+  width: 18px;
+  height: 18px;
+  animation: pulse 1s linear infinite;
+}
+
+.title::before,
+.title::after {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  left: 0px;
+  background-color: var(--green);
+}
+
+.message,
+.signin {
+  font-size: 14.5px;
+}
+
+.signin {
+  text-align: center;
+}
+
+.signin a:hover {
+  text-decoration: underline royalblue;
+}
+
+.signin a {
+  color: var(--green);
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 50px;
+}
+
+.form label {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form label .input {
+  background-color: #f3f3f3;
+
+  width: 100%;
+  padding: 14px;
+  box-sizing: border-box;
+  outline: 0;
+  border: 1px solid rgb(192 192 192 / 40%);
+  border-radius: 10px;
+}
+
+.form label .input + span {
+  position: absolute;
+  left: 10px;
+  top: 0px;
+  font-size: 0.9em;
+  cursor: text;
+  transition: 0.3s ease;
+}
+
+.form label .input:placeholder-shown + span {
+  top: 12.5px;
+  font-size: 0.9em;
+}
+
+.form label .input:focus + span,
+.form label .input:valid + span {
+  color: var(--green);
+  top: 0px;
+  font-size: 0.7em;
+  font-weight: 600;
+}
+
+.input {
+  font-size: medium;
+}
+
+.submit {
+  border: none;
+  outline: none;
+  padding: 10px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+  transform: .3s ease;
+  background-color: var(--green);
+}
+
+.submit:hover {
+  background-color: #222922;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+
+  to {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
