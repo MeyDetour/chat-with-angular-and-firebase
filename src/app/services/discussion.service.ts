@@ -15,6 +15,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {Discussion} from "../model/discussion.type"
 import {UsersService} from './users.service';
 import {User} from '../model/user.type';
+import {DateService} from './date.service';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,7 @@ export class DiscussionService {
   currentDiscussion$ = this.currentDiscussionSource.asObservable();
 
 
-  constructor(private firestore: Firestore, private userService: UsersService, private router: Router) {
+  constructor(private firestore: Firestore,private dateService : DateService ,private userService: UsersService, private router: Router) {
 
   }
 
@@ -58,7 +59,7 @@ export class DiscussionService {
   createDiscussion(discussion: Discussion): any {
     let currentUserId = this.userService.getCurrentUser().uid
     discussion.participants.push(currentUserId)
-    discussion.createdAt = new Date().toISOString()
+    discussion.createdAt = this.dateService.getTodayDate()
     discussion.creatorId = currentUserId
     const discussionsRef = collection(this.firestore, 'discussion');
     console.log("discussion created")
@@ -66,8 +67,9 @@ export class DiscussionService {
     return docRef;
   }
 
-  async editDiscussion(id:string,discussion: Discussion): Promise<any> {
-    const documentRef  = doc(this.firestore, 'discussion', id);
+  async editDiscussion(discussion: Discussion): Promise<any> {
+
+    const documentRef  = doc(this.firestore, 'discussion', discussion.id);
     try {
       await updateDoc(documentRef, discussion);
       const snapshot = await getDoc(documentRef);
@@ -81,12 +83,12 @@ export class DiscussionService {
     }
   }
 
-  deleteDiscussion(discussion: Discussion | null): Promise<void> {
+  deleteDiscussion(discussion: Discussion): Promise<void> {
     if (!discussion.id) {
       console.error("discussion.id is undefined");
       return Promise.reject(new Error("Invalid discussion ID"));
     }
-
+    console.log(discussion)
     const discussionRef = doc(this.firestore, 'discussion', discussion.id);
     return deleteDoc(discussionRef);
   }

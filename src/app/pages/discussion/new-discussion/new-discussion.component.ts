@@ -20,6 +20,7 @@ export class NewDiscussionComponent {
     creatorId: "",
     participants: ["jsp"],
     createdAt: "",
+    id:" "
   }
 
   constructor(private discussionService: DiscussionService, private router: Router) {

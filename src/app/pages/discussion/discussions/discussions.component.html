@@ -6,7 +6,6 @@
       <label for="search">
 
 
-
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M19.4851 20.154L13.2231 13.892C12.7231 14.318 12.1481 14.6477 11.4981 14.881C10.8481 15.1144 10.1948 15.231 9.53811 15.231C7.93677 15.231 6.58144 14.6767 5.47211 13.568C4.36277 12.4594 3.80811 11.1044 3.80811 9.50305C3.80811 7.90171 4.36211 6.54605 5.47011 5.43605C6.57811 4.32605 7.93277 3.77038 9.53411 3.76905C11.1354 3.76771 12.4914 4.32238 13.6021 5.43305C14.7128 6.54371 15.2681 7.89938 15.2681 9.50005C15.2681 10.1947 15.1451 10.867 14.8991 11.517C14.6531 12.167 14.3298 12.723 13.9291 13.185L20.1911 19.446L19.4851 20.154ZM9.5391 14.23C10.8658 14.23 11.9858 13.7734 12.8991 12.86C13.8124 11.9467 14.2691 10.8264 14.2691 9.49904C14.2691 8.17171 13.8124 7.05171 12.8991 6.13905C11.9858 5.22638 10.8658 4.76971 9.5391 4.76905C8.21244 4.76838 7.09211 5.22505 6.17811 6.13905C5.26411 7.05305 4.80744 8.17304 4.80811 9.49904C4.80877 10.825 5.26544 11.945 6.17811 12.859C7.09077 13.773 8.21077 14.2297 9.53811 14.229"
@@ -23,7 +22,8 @@
         @if (discussion.creator) {
 
 
-          <div class="oneDiscussion" (click)="changeDiscussion(discussion.id)" [class.focus]="discussion==currentDiscussion" >
+          <div class="oneDiscussion" (click)="changeDiscussion(discussion.id)"
+               [class.focus]="discussion==currentDiscussion">
 
 
             @if (discussion.creator && discussion.creator.photoURL) {
@@ -45,21 +45,14 @@
     </div>
   </nav>
   <div class="rightPanel">
-    @if (route == "one-discussion" && currentDiscussion)
-    {
-      <app-one-discussion   [discussion]="currentDiscussion"></app-one-discussion>
-    }
-    @else if (route=="new-discussion")
-    {
-      <app-new-discussion ></app-new-discussion>
-    }
-    @else if (route=="edit-discussion")
-    {
-      <app-edit-discussion ></app-edit-discussion>
-    }
-    @else
-    {
-    <span>Aucune discussion en cours </span>
+    @if (route == "one-discussion" && currentDiscussion) {
+      <app-one-discussion [discussion]="currentDiscussion"></app-one-discussion>
+    } @else if (route == "new-discussion") {
+      <app-new-discussion></app-new-discussion>
+    } @else if (route == "edit-discussion") {
+      <app-edit-discussion></app-edit-discussion>
+    } @else {
+      <span>Aucune discussion en cours </span>
     }
   </div>
 </div>

@@ -40,11 +40,11 @@ export class EditDiscussionComponent {
       this.errorMessage = "You must enter a title"
     return;
     }
-    this.discussionService.editDiscussion(this.currentDiscussion.id,this.currentDiscussion)
+    this.discussionService.editDiscussion(this.currentDiscussion)
       .then((response) => {
         console.log("sicessfully edited :",response)
       }).catch((error)=>{
-      console.log("error while editing discussion")
+      console.log("error while editing discussion : ",error.message)
     })
   }
 }

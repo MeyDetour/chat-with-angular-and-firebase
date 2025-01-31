@@ -74,8 +74,9 @@ export class DiscussionsComponent {
           discussionFinalData.push(discussion);
           if (index == 0) {
             this.discussionService.setCurrentDiscussion(discussion)
+            this.currentDiscussion = discussion
+            this.discussionService.setRoute("one-discussion")
           }
-
         }
         this.discussions.set(discussionFinalData)
       });
