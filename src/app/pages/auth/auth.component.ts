@@ -53,7 +53,7 @@ export class AuthComponent {
         await this.userService.login(this.newUser.email, this.newUser.password);
         this.successMessage = 'Login successfully.';
       }
-      this.router.navigate(['/discussion']); // Redirige vers une autre page après connexion
+      this.router.navigate(['/discussions']); // Redirige vers une autre page après connexion
     } catch (error: any) {
       this.errorMessage = this.getErrorMessage(error.code);
       this.successMessage = '';

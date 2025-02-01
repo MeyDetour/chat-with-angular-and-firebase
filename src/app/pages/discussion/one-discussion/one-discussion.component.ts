@@ -7,6 +7,7 @@ import {User} from '../../../model/user.type';
 import {FormsModule} from '@angular/forms';
 import {MessageService} from '../../../services/message.service';
 import {UsersService} from '../../../services/users.service';
+import {serverTimestamp} from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-one-discussion',
@@ -17,31 +18,43 @@ import {UsersService} from '../../../services/users.service';
   styleUrl: './one-discussion.component.css'
 })
 export class OneDiscussionComponent {
-  @Input() discussion: any;
-  route = input()
-  messages = signal<Message[]>([])
+
+  discussion: Discussion  = {
+    title:"",
+    creatorId:"",
+    participants:[],
+    createdAt:"",
+    id:""
+  };
+  messages = <Message[]>[]
   newMessage: Message = {
     content: "",
-    createdAt: "",
+    createdAt: new Date().getTime(),
+    createdAtString: "",
     creatorId: "",
     discussionId: "",
-    id: ""
 
   }
-  currentUserId = signal<string|null>(null)
+  currentUserId = signal<string | null>(null)
 
   constructor(private discussionService: DiscussionService, private userService: UsersService, private router: Router, private messageService: MessageService) {
   }
 
   ngOnInit() {
-    console.log(this.discussion);
+    this.discussionService.currentDiscussion$.subscribe(async discussion => {
+      this.discussion = discussion
+      console.log("discussion:", this.discussion)
+      if (!this.discussion || !this.discussion.id) {
+        return;
+      }
+      console.log("discussion:", this.discussion)
+      this.newMessage.discussionId = this.discussion.id
+      this.currentUserId.set(this.userService.getCurrentUser().uid)
+      await this.getMessages()
 
-    console.log(this.route);
-    this.newMessage.discussionId = this.discussion.id
-    this.currentUserId.set(this.userService.getCurrentUser().uid)
-    this.getMessages()
 
-    console.log("current user id ",this.currentUserId);
+    })
+
   }
 
   async getMessages() {
@@ -49,10 +62,10 @@ export class OneDiscussionComponent {
       console.error("Erreur : discussionId non défini !");
       return;
     }
-    console.log("lets get messages")
+    console.log("recuperation des messages pour :",this.discussion.id)
     let messages = await this.messageService.getAllMessageOfConversations(this.discussion.id)
     console.log("Messages récupérés :", messages);
-    this.messages.set(messages)
+    this.messages = messages
 
   }
 
@@ -62,16 +75,37 @@ export class OneDiscussionComponent {
 
   async delete() {
 
+    if (!this.discussion) {
+      console.log("no discussion")
+      return;
+    }
     let res = await this.discussionService.deleteDiscussion(this.discussion)
-    this.discussion = null
+
+    this.discussion = {
+      title:"",
+      creatorId:"",
+      participants:[],
+      createdAt:"",
+      id:""
+    }
+  }
+
+  async deleteMessage(messageId: string) {
+    let messageIdDeleted = await this.messageService.deleteMessage(messageId)
+    this.messages = this.messages.filter(message => message.id !== messageIdDeleted);
   }
 
   async onSubmitCreateMessage() {
+    if (!this.discussion || !this.discussion.id) {
+      console.log("no discussion")
+      return;
+    }
     console.log("send message")
-    console.log(this.newMessage.content.replace(/\s/g, ''))
     if (this.newMessage.content.replace(/\s/g, '') !== "") {
       let createdMessage = await this.messageService.sendMessage(this.newMessage, this.discussion.id)
       console.log(createdMessage)
+      this.newMessage.content = ""
+      this.messages.push(createdMessage)
     }
   }
 

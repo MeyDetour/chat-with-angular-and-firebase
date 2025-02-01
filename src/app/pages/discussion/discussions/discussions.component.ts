@@ -31,13 +31,20 @@ export class DiscussionsComponent {
   constructor(private discussionService: DiscussionService, private userService: UsersService, private router: Router) {
   }
 
-  ngOnInit() {
-    this.getDiscussionsData()
+  async ngOnInit() {
+
+    await this.getDiscussionsData()
     this.discussionService.currentDiscussion$.subscribe(discussion => {
       this.currentDiscussion = discussion
     })
+
     this.discussionService.route$.subscribe(route => {
       this.route = route
+    })
+
+    this.discussionService.discussions$.subscribe(discussions => {
+      this.discussions.set(discussions)
+      console.log("discussions", discussions)
     })
   }
 
@@ -51,35 +58,25 @@ export class DiscussionsComponent {
     if (id) {
       const discussion = await this.discussionService.getDiscussion(id)
       console.log(discussion)
-      this.discussionService.setCurrentDiscussion(discussion)
+
       this.discussionService.setRoute("one-discussion")
+      this.discussionService.setCurrentDiscussion(discussion)
+
     }
   }
 
-  getDiscussionsData() {
-    this.discussionService.getDiscussions().pipe(
-      catchError((error) => {
-        console.error('Erreur lors de la récupération des discussions :', error);
-        return of([]); // Retourne un tableau vide en cas d'erreur pour éviter que l'application ne plante
-      })
-    )
-      .subscribe(async discussions => {
-        let discussionFinalData: Array<Discussion> = [];
-        for (const [index, discussion] of discussions.entries()) {
+  async getDiscussionsData() {
+    try {
+      let discussions = await this.discussionService.getDiscussions()
+      if (discussions && discussions.length > 0) {
+        this.discussionService.setRoute("one-discussion")
+        this.discussionService.setCurrentDiscussion(discussions[0])
+      }
+    } catch (error) {
+      console.error('Erreur lors de la récupération des discussions :', error);
 
-          if (discussion.creatorId) {
-            let author = await this.userService.getUserWithId(discussion.creatorId)
-            discussion.creator = author;
-          }
-          discussionFinalData.push(discussion);
-          if (index == 0) {
-            this.discussionService.setCurrentDiscussion(discussion)
-            this.currentDiscussion = discussion
-            this.discussionService.setRoute("one-discussion")
-          }
-        }
-        this.discussions.set(discussionFinalData)
-      });
+
+    }
   }
 
 

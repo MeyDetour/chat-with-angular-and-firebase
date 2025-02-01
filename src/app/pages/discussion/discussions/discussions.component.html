@@ -1,10 +1,9 @@
 <div class="discussionsPage">
   <nav class="navDiscussions">
 
-    <button class="button" (click)="openPanelNewDiscussion()">Create disucssion</button>
+    <button class="button1" (click)="openPanelNewDiscussion()">Create disucssion</button>
     <form action="" class="searchForm">
       <label for="search">
-
 
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -19,9 +18,7 @@
 
     <div>
       @for (discussion of discussions(); track discussion.id) {
-        @if (discussion.creator) {
-
-
+        @if (discussion.creator && discussion.id) {
           <div class="oneDiscussion" (click)="changeDiscussion(discussion.id)"
                [class.focus]="discussion==currentDiscussion">
 
@@ -46,7 +43,7 @@
   </nav>
   <div class="rightPanel">
     @if (route == "one-discussion" && currentDiscussion) {
-      <app-one-discussion [discussion]="currentDiscussion"></app-one-discussion>
+      <app-one-discussion ></app-one-discussion>
     } @else if (route == "new-discussion") {
       <app-new-discussion></app-new-discussion>
     } @else if (route == "edit-discussion") {

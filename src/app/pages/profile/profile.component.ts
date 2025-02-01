@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {UsersService} from '../../services/users.service';
 import {Router} from '@angular/router';
 
@@ -12,7 +12,7 @@ export class ProfileComponent {
   constructor(private userService: UsersService, private router: Router) {
   }
 
-  logout(){
+  logout() {
     this.userService.logout()
     this.router.navigate(['login'])
   }

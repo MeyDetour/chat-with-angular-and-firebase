@@ -5,6 +5,6 @@ export type Discussion={
   title: string,
   participants: Array<string>,
   createdAt: string,
-  creator?: User,
-  id: string,
+  creator?: User|null,
+  id?: string,
 }

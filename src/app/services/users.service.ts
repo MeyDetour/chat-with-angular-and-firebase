@@ -25,31 +25,29 @@ import {
   providedIn: 'root'
 })
 export class UsersService {
-  currentUser$ = new BehaviorSubject<User | null>(null);
+  private userSource = new BehaviorSubject<User | null>(null);
+  currentUser$ = this.userSource.asObservable()
 
   constructor(private firestore: Firestore, private auth: Auth) {
-    onAuthStateChanged(this.auth, (firebaseUser) => {
-      if (firebaseUser) {
-        const mappedUser: User = {
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          displayName: firebaseUser.displayName,
-          photoURL: firebaseUser.photoURL,
-        };
-        this.currentUser$.next(mappedUser); // Met à jour le BehaviorSubject
-      } else {
-        this.currentUser$.next(null); // Pas d'utilisateur connecté
-      }
-    });
+
+  }
+  setCurrentUser(user: User|null) {
+    return this.userSource.next(user);
   }
 
   getCurrentUser(): any {
     const firebaseUser: FirebaseUser | null = this.auth.currentUser;
-
+    console.log("firebase user :",firebaseUser);
     if (!firebaseUser) {
       return null;
     }
     console.log("firebaseuser :", firebaseUser);
+    this.setCurrentUser({
+      uid: firebaseUser.uid,
+      email: firebaseUser.email,
+      displayName: firebaseUser.displayName,
+      photoURL: firebaseUser.photoURL,
+    });
     //  to return User object
     return {
       uid: firebaseUser.uid,
@@ -100,6 +98,7 @@ export class UsersService {
   }
 
   async logout() {
+    this.setCurrentUser(null);
     return signOut(this.auth);
   }
 

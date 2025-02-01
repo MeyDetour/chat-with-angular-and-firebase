@@ -4,6 +4,7 @@ import {IconComponent} from '../../../components/icon/icon.component';
 import {Discussion} from '../../../model/discussion.type';
 import {DiscussionService} from '../../../services/discussion.service';
 import {Router} from '@angular/router';
+import {UsersService} from '../../../services/users.service';
 
 @Component({
   selector: 'app-new-discussion',
@@ -18,17 +19,21 @@ export class NewDiscussionComponent {
   newDiscussion: Discussion = {
     title: "",
     creatorId: "",
-    participants: ["jsp"],
+    participants: [],
     createdAt: "",
-    id:" "
-  }
-
-  constructor(private discussionService: DiscussionService, private router: Router) {
-
   }
 
   errorMessage: null | string = '';
   successMessage: string = '';
+
+  constructor(private discussionService: DiscussionService, private router: Router, private userService :UsersService) {
+
+  }
+  ngOnInit() {
+  let user =   this.userService.getCurrentUser()
+    this.newDiscussion.participants.push(user.uid);
+  }
+
 
 
   async onSubmit() {
@@ -42,6 +47,8 @@ export class NewDiscussionComponent {
     console.log('Discussion créée avec succès :', createdDiscussion);
 
     this.discussionService.setRoute("one-discussion");
+    this.discussionService.setCurrentDiscussion(createdDiscussion);
+    this.discussionService.addToDiscussion(createdDiscussion);
 
   }
 }

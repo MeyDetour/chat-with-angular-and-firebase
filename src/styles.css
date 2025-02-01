@@ -180,7 +180,7 @@ flex-direction: column;
   font-size: medium;
 }
 
-.submit {
+.button {
   border: none;
   outline: none;
   padding: 10px;
@@ -189,9 +189,10 @@ flex-direction: column;
   font-size: 16px;
   transform: .3s ease;
   background-color: var(--green);
+  cursor: pointer;
 }
 
-.submit:hover {
+.button:hover {
   background-color: #222922;
 }
 
