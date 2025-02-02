@@ -19,6 +19,9 @@ import {environment} from '../../environements/environement';
   styleUrls: ['./auth.css']
 })
 export class AuthComponent {
+
+
+
   newUser: User = {
     displayName: "",
     email: "",
@@ -31,8 +34,10 @@ export class AuthComponent {
   successMessage: string = '';
 
   auth = inject(Auth)
+
   constructor(private userService: UsersService, private router: Router) {
   }
+
 
   setType(type: 'signup' | 'login') {
     this.type.set(type)
@@ -46,7 +51,10 @@ export class AuthComponent {
 
     try {
       if (this.type() == "signup") {
-        await this.userService.register(this.newUser.email, this.newUser.password,this.newUser.displayName="DefaultUsername");
+        if (this.newUser.displayName ==""){
+          this.newUser.displayName = "defaultUsername"
+        }
+        await this.userService.register(this.newUser.email, this.newUser.password,this.newUser.displayName);
         this.successMessage = 'Signup successfully.';
         this.router.navigate(['/profile']);
       } else {

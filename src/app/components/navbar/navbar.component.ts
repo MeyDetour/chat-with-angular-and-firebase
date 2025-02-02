@@ -32,9 +32,5 @@ export class NavbarComponent {
         console.log("User updated in navbar:", this.currentUser);
 
     });
-
-
-
-
   }
 }

@@ -20,6 +20,7 @@ import {
   signInWithEmailAndPassword,
   signOut, updateProfile
 } from '@angular/fire/auth';
+import {Discussion} from '../model/discussion.type';
 
 @Injectable({
   providedIn: 'root'
@@ -28,16 +29,49 @@ export class UsersService {
   private userSource = new BehaviorSubject<User | null>(null);
   currentUser$ = this.userSource.asObservable()
 
+  private usersNotParticipantsSource = new BehaviorSubject<User[]>([]);
+  usersNotParticipantsSource$ = this.usersNotParticipantsSource.asObservable()
+
   constructor(private firestore: Firestore, private auth: Auth) {
 
   }
-  setCurrentUser(user: User|null) {
+
+  setCurrentUser(user: User | null) {
     return this.userSource.next(user);
   }
 
+  setUsersNotParticipantsSource(users: User[]) {
+    return this.usersNotParticipantsSource.next(users);
+  }
+
+  addInUsersNotParticipantsSource(user: User) {
+    const users: User[] = this.usersNotParticipantsSource.getValue();
+    this.usersNotParticipantsSource.next([...users, user]);
+  }
+
+  async getUsersNotParticipants(discussion: Discussion) {
+    let users = collection(this.firestore, 'users')
+    let usersSnapshot = await getDocs(users)
+    let usersToReturn: User[] = []
+
+    if (!usersSnapshot.empty) {
+      usersSnapshot.forEach(doc => {
+     const user = doc.data() as User
+
+        if (user.uid &&   !discussion.participants.includes(user.uid)) {
+          usersToReturn.push(user)
+        }
+      })
+    }
+  this.setUsersNotParticipantsSource(usersToReturn);
+    return usersToReturn
+
+  }
+
+
   getCurrentUser(): any {
     const firebaseUser: FirebaseUser | null = this.auth.currentUser;
-    console.log("firebase user :",firebaseUser);
+    console.log("firebase user :", firebaseUser);
     if (!firebaseUser) {
       return null;
     }
@@ -45,7 +79,7 @@ export class UsersService {
     this.setCurrentUser({
       uid: firebaseUser.uid,
       email: firebaseUser.email,
-      displayName: firebaseUser.displayName,
+      displayName: firebaseUser.displayName ? firebaseUser.displayName : "defaultUsername",
       photoURL: firebaseUser.photoURL,
     });
     //  to return User object
@@ -105,13 +139,13 @@ export class UsersService {
   async getUserWithId(id: string): Promise<User | null> {
     try {
       const q = query(collection(this.firestore, "users"), where("uid", "==", id));
-      const querySnapshot = await getDocs(q) ;
+      const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-         const userDoc = querySnapshot.docs[0];
-         const userData = userDoc.data() as User;
-        return userData
-      }else{
+        const userDoc = querySnapshot.docs[0];
+      return  userDoc.data() as User;
+
+      } else {
         return null;
       }
 

@@ -13,7 +13,7 @@ import {UsersService} from '../../../services/users.service';
     IconComponent
   ],
   templateUrl: './new-discussion.component.html',
-  styleUrl: './new-discussion.component.css'
+  styleUrls: ['./new-discussion.component.css']
 })
 export class NewDiscussionComponent {
   newDiscussion: Discussion = {

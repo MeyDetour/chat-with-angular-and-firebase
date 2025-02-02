@@ -1,4 +1,4 @@
-@if(currentDiscussion){
+@if (currentDiscussion) {
   <div class="editDiscussion">
     <form class="form" method="post" #form="ngForm" (ngSubmit)="onSubmit()">
 
@@ -17,8 +17,17 @@
                placeholder="" required="Email is required">
       </label>
 
+      <span>Ajouter des membres</span>
 
-      <button class="submit">modifier</button>
+
+
+      @if (usersNotInGroup) {
+        @for (user of usersNotInGroup; track user.uid){
+
+        }
+       }
+
+      <button class="submit button">modifier</button>
 
 
     </form>

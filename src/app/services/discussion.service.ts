@@ -128,7 +128,9 @@ export class DiscussionService {
       await updateDoc(documentRef, discussion);
       const snapshot = await getDoc(documentRef);
       if (snapshot.exists()) {
-        return snapshot.data() as Discussion
+        let discussion = snapshot.data() as Discussion
+        this.setCurrentDiscussion(discussion)
+        return discussion;
       } else return null;
     } catch (error) {
       console.error('Erreur lors de la mise à jour :', error);

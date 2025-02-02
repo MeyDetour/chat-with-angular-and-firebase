@@ -1,5 +1,5 @@
 export type User={
- displayName: string|null,
+ displayName: string,
   email: string|null,
   photoURL: string|null,
   password?: string,

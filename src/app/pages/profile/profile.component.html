@@ -1,7 +1,8 @@
 <div class="container">Profile works
-
-
+@if (currentUser()){
+  <span>{{currentUser()?.displayName}}</span>
   <button class="button" (click)="logout()">
     Déconnecter
   </button>
+}
 </div>
