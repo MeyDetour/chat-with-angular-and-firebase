@@ -130,6 +130,7 @@ export class DiscussionService {
       if (snapshot.exists()) {
         let discussion = snapshot.data() as Discussion
         this.setCurrentDiscussion(discussion)
+        this.userService.getUsersinDiscussion(discussion)
         return discussion;
       } else return null;
     } catch (error) {

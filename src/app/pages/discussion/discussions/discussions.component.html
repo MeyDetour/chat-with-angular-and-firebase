@@ -22,7 +22,6 @@
           <div class="oneDiscussion" (click)="changeDiscussion(discussion.id)"
                [class.focus]="discussion==currentDiscussion">
 
-
             @if (discussion.creator && discussion.creator.photoURL) {
               <img src="{{discussion.creator.photoURL}}" alt="">
             } @else {
@@ -33,8 +32,6 @@
 
           </div>
 
-        } @else {
-          no creator
         }
 
 
@@ -43,7 +40,7 @@
   </nav>
   <div class="rightPanel">
     @if (route == "one-discussion" && currentDiscussion) {
-      <app-one-discussion ></app-one-discussion>
+      <app-one-discussion></app-one-discussion>
     } @else if (route == "new-discussion") {
       <app-new-discussion></app-new-discussion>
     } @else if (route == "edit-discussion") {

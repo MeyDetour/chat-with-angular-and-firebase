@@ -35,4 +35,8 @@ export class ProfileComponent {
     this.userService.logout()
     this.router.navigate(['/auth'])
   }
+  async delete() {
+    await this.userService.deleteProfile()
+    this.router.navigate(['/auth'])
+  }
 }

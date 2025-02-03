@@ -18,9 +18,12 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  signOut, updateProfile
+  signOut, updateProfile, deleteUser
 } from '@angular/fire/auth';
 import {Discussion} from '../model/discussion.type';
+import {DiscussionService} from './discussion.service';
+import {Message} from '../model/message.type';
+import {MessageService} from './message.service';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +35,10 @@ export class UsersService {
   private usersNotParticipantsSource = new BehaviorSubject<User[]>([]);
   usersNotParticipantsSource$ = this.usersNotParticipantsSource.asObservable()
 
-  constructor(private firestore: Firestore, private auth: Auth) {
+  private usersInDiscussionSource = new BehaviorSubject<User[]>([]);
+  usersInDiscussionSource$ = this.usersInDiscussionSource.asObservable()
+
+  constructor(private firestore: Firestore, private auth: Auth  ) {
 
   }
 
@@ -44,30 +50,42 @@ export class UsersService {
     return this.usersNotParticipantsSource.next(users);
   }
 
-  addInUsersNotParticipantsSource(user: User) {
-    const users: User[] = this.usersNotParticipantsSource.getValue();
-    this.usersNotParticipantsSource.next([...users, user]);
+  setUsersInDiscussionSource(users: User[]) {
+    return this.usersInDiscussionSource.next(users);
   }
+
 
   async getUsersNotParticipants(discussion: Discussion) {
     let users = collection(this.firestore, 'users')
     let usersSnapshot = await getDocs(users)
     let usersToReturn: User[] = []
+    let userUId = this.getCurrentUser().uid
 
     if (!usersSnapshot.empty) {
       usersSnapshot.forEach(doc => {
-     const user = doc.data() as User
+        const user = doc.data() as User
 
-        if (user.uid &&   !discussion.participants.includes(user.uid)) {
+        if (user.uid && !discussion.participants.includes(user.uid) && user.uid != userUId) {
           usersToReturn.push(user)
         }
       })
     }
-  this.setUsersNotParticipantsSource(usersToReturn);
+    this.setUsersNotParticipantsSource(usersToReturn);
     return usersToReturn
 
   }
 
+  async getUsersinDiscussion(discussion: Discussion) {
+    let usersToReturn: User[] = []
+    let userUId = this.getCurrentUser().uid
+
+    for (const userId of discussion.participants) {
+      const user = await this.getUserWithId(userId)
+      if (user && userUId != user.uid) usersToReturn.push(user)
+    }
+    this.setUsersInDiscussionSource(usersToReturn);
+    return usersToReturn
+  }
 
   getCurrentUser(): any {
     const firebaseUser: FirebaseUser | null = this.auth.currentUser;
@@ -136,6 +154,98 @@ export class UsersService {
     return signOut(this.auth);
   }
 
+  async deleteProfile() {
+    const firebaseUser: FirebaseUser | null = this.auth.currentUser;
+
+    if (!firebaseUser) {
+      console.error('No current user');
+      return;
+    }
+
+    const uid = firebaseUser.uid;
+
+    try {
+      // Delete the user profile
+      await this.deleteUserProfile(uid);
+    } catch (error) {
+      console.error('Error deleting user profile:', error);
+    }
+
+    try {
+      // Remove user from discussions
+      await this.removeUserFromDiscussions(uid);
+    } catch (error) {
+      console.error('Error deleting participants of discussion:', error);
+    }
+
+    try {
+      // Remove all user messages
+      await this.removeUserMessages(uid);
+    } catch (error) {
+      console.error('Error deleting messages of user:', error);
+    }
+  }
+
+  private async deleteUserProfile(uid: string) {
+    // Delete the user from Firebase Authentication
+    const firebaseUser = this.auth.currentUser;
+    if (firebaseUser) {
+      await deleteUser(firebaseUser);
+    }
+
+    // Delete the user document from Firestore
+    const userDoc = doc(this.firestore, 'users', uid);
+    await deleteDoc(userDoc);
+  }
+  private async removeUserFromDiscussions(uid: string) {
+    const discussionsCollection = collection(this.firestore, 'discussion');
+    const discussionsSnapshot = await getDocs(discussionsCollection);
+
+    const discussionUpdates = discussionsSnapshot.docs.map(async (discussionDoc) => {
+      let discussion = discussionDoc.data() as Discussion;
+
+      // Vérifier si l'utilisateur fait partie de la discussion et le supprimer
+      if (discussion.participants.includes(uid)) {
+        discussion.participants = discussion.participants.filter(userID => userID !== uid);
+
+        // Mise à jour du document de la discussion dans Firestore
+        const documentRef = doc(this.firestore, 'discussion', discussionDoc.id); // Utilisation de `discussionDoc.id` comme ID du document
+        try {
+          await updateDoc(documentRef, { participants: discussion.participants });
+        } catch (error) {
+          console.error('Error updating discussion:', error);
+        }
+      }
+    });
+
+    // Attendre que toutes les mises à jour soient terminées
+    await Promise.all(discussionUpdates);
+  }
+
+
+  private async removeUserMessages(uid: string) {
+    const messagesCollection = collection(this.firestore, 'messages');
+    const messagesSnapshot = await getDocs(messagesCollection);
+
+    const messageDeletions = messagesSnapshot.docs.map(async (doc) => {
+      let message = doc.data() as Message;
+
+      // Vérifier si le message a été créé par l'utilisateur et le supprimer
+      if (message.creatorId === uid && message.id) {
+        try {
+          await deleteDoc(doc.ref); // Utilisation de `doc.ref` pour la suppression
+        } catch (error) {
+          console.error('Error deleting message:', error);
+        }
+      }
+    });
+
+    // Attendre que toutes les suppressions soient terminées
+    await Promise.all(messageDeletions);
+  }
+
+
+
   async getUserWithId(id: string): Promise<User | null> {
     try {
       const q = query(collection(this.firestore, "users"), where("uid", "==", id));
@@ -143,7 +253,7 @@ export class UsersService {
 
       if (!querySnapshot.empty) {
         const userDoc = querySnapshot.docs[0];
-      return  userDoc.data() as User;
+        return userDoc.data() as User;
 
       } else {
         return null;

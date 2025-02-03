@@ -14,7 +14,22 @@
              class="input" type="text"
              placeholder="" required="Email is required">
     </label>
-
+    <span>Membres</span>
+    @if (usersNotInGroup) {
+      @for (user of usersNotInGroup; track user.uid) {
+        @if (user.uid) {
+          <div>
+            <input type="checkbox"
+                   [id]="user.uid"
+                   [value]="user.uid"
+                   [checked]="selectedUsers.includes(user.uid)"
+                   (change)="toggleUserSelection(user.uid)"
+                   name="participants"/>
+            <label [for]="user.uid">{{ user.displayName }} <span>{{ user.email }}</span></label>
+          </div>
+        }
+      }
+    }
 
     <button class="button">Créer</button>
 
