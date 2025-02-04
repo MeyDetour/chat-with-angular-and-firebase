@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {
   addDoc,
   collection,
@@ -38,9 +38,11 @@ export class UsersService {
   private usersInDiscussionSource = new BehaviorSubject<User[]>([]);
   usersInDiscussionSource$ = this.usersInDiscussionSource.asObservable()
 
-  constructor(private firestore: Firestore, private auth: Auth  ) {
+  constructor(
+    @Inject(Firestore) private firestore: Firestore,
+    @Inject(Auth) private auth: Auth
+  ) {}
 
-  }
 
   setCurrentUser(user: User | null) {
     return this.userSource.next(user);
@@ -155,6 +157,7 @@ export class UsersService {
   }
 
   async deleteProfile() {
+    signOut(this.auth);
     const firebaseUser: FirebaseUser | null = this.auth.currentUser;
 
     if (!firebaseUser) {
@@ -203,18 +206,19 @@ export class UsersService {
 
     const discussionUpdates = discussionsSnapshot.docs.map(async (discussionDoc) => {
       let discussion = discussionDoc.data() as Discussion;
+      const documentRef = doc(this.firestore, 'discussion', discussionDoc.id); // Utilisation de `discussionDoc.id` comme ID du document
 
+      if (discussion.creatorId == uid){
+       discussion.creatorId = discussion.participants[0]
+      }
       // Vérifier si l'utilisateur fait partie de la discussion et le supprimer
       if (discussion.participants.includes(uid)) {
         discussion.participants = discussion.participants.filter(userID => userID !== uid);
-
-        // Mise à jour du document de la discussion dans Firestore
-        const documentRef = doc(this.firestore, 'discussion', discussionDoc.id); // Utilisation de `discussionDoc.id` comme ID du document
-        try {
-          await updateDoc(documentRef, { participants: discussion.participants });
-        } catch (error) {
-          console.error('Error updating discussion:', error);
-        }
+      }
+      try {
+        await updateDoc(documentRef, { participants: discussion.participants });
+      } catch (error) {
+        console.error('Error updating discussion:', error);
       }
     });
 

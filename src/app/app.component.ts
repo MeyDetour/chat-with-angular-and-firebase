@@ -14,8 +14,8 @@ export class AppComponent {
   currentUser : User|null = null
   constructor(private userService : UsersService) {
   }
-  ngOnInit() {
-    this.currentUser = this.userService.getCurrentUser();
+  async ngOnInit() {
+    this.currentUser = await this.userService.getCurrentUser();
 
     // follow change of user
 

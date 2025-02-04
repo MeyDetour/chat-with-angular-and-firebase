@@ -18,13 +18,13 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideFirebaseApp(() => {
-      console.log('Initializing Firebase'); // Log ici
-      const app = initializeApp(environment.firebaseConfig);
-
-      console.log('Firebase Initialized:', app.name); // Log l'initialisation
-      return app;
-    }),
+    // provideFirebaseApp(() => {
+    //   console.log('Initializing Firebase'); // Log ici
+    //   const app = initializeApp(environment.firebaseConfig);
+    //
+    //   console.log('Firebase Initialized:', app.name); // Log l'initialisation
+    //   return app;
+    // }),
 
     provideFirestore(() => {
       console.log('Initializing Firestore'); // Log ici
@@ -38,5 +38,7 @@ export const appConfig: ApplicationConfig = {
       console.log('Initializing Auth'); // Log pour Auth
       return getAuth();
     }),
+
+    provideFirebaseApp(() => initializeApp({ projectId: "angular-chat-ca0ea", appId: "1:258979895162:web:0d5d00751de6108838e8c3", storageBucket: "angular-chat-ca0ea.firebasestorage.app", apiKey: "AIzaSyBTmBJGm1oIsadR1a5bsbsKbJNRBr1pDXE", authDomain: "angular-chat-ca0ea.firebaseapp.com", messagingSenderId: "258979895162", measurementId: "G-T6XYJM372C" })), provideAuth(() => getAuth()), provideFirebaseApp(() => initializeApp({ projectId: "angular-chat-ca0ea", appId: "1:258979895162:web:0d5d00751de6108838e8c3", storageBucket: "angular-chat-ca0ea.firebasestorage.app", apiKey: "AIzaSyBTmBJGm1oIsadR1a5bsbsKbJNRBr1pDXE", authDomain: "angular-chat-ca0ea.firebaseapp.com", messagingSenderId: "258979895162", measurementId: "G-T6XYJM372C" })), provideAuth(() => getAuth()), provideFirestore(() => getFirestore()),
   ]
 };
